@@ -13,3 +13,4 @@ end
 require 'client'
 require 'shows_repository'
 require 'tvshows'
+require 'organizer'

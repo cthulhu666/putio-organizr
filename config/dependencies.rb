@@ -13,4 +13,12 @@ class Dependencies
       db.loggers << Dependencies[:logger] if ENV['DEBUG_SQL']
     end
   end
+
+  register(:putio) do
+    PutIo::Client.new
+  end
+
+  register(:shows_repository) do
+    ShowsRepository.new
+  end
 end
