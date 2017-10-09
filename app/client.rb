@@ -3,7 +3,6 @@ require 'json'
 
 module PutIo
   class Client
-
     def list_completed_transfers
       completed_transfers(list_events)
     end

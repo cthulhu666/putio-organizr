@@ -11,6 +11,9 @@ gem 'dry-container'
 gem 'faraday'
 gem 'rake'
 
+# WEB stack
+gem 'grape'
+
 # DB stack
 gem 'pg'
 gem 'sequel'
