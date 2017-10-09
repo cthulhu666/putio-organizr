@@ -13,8 +13,10 @@ class TvShows
 
   def fetch(url)
     RSS::Parser.parse(url, true)
-  rescue
-    return nil
+  rescue OpenURI::HTTPError => e
+    return nil if e.io.status.first == '404'
+    sleep 1 && retry if e.io.status.first == '503'
+    raise e
   end
 
   def parse_title(s)
