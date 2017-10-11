@@ -86,6 +86,7 @@ GEM
     mustermann (1.0.1)
     mustermann-grape (1.0.0)
       mustermann (~> 1.0.0)
+    newrelic_rpm (4.5.0.337)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     pg (0.21.0)
@@ -192,6 +193,7 @@ DEPENDENCIES
   dry-container
   faraday
   grape
+  newrelic_rpm
   pg
   rake
   resque
