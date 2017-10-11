@@ -1,5 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), './app'))
 
+$stdout.sync = true
+
 require 'sequel'
 
 require_relative 'config/dependencies'
