@@ -11,6 +11,7 @@ gem 'dry-container'
 gem 'faraday'
 gem 'rake'
 gem 'resque'
+gem 'resque-heroku-signals'
 
 # WEB stack
 gem 'grape'
