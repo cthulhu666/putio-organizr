@@ -3,6 +3,7 @@ require 'json'
 
 module PutIo
   class Client
+    include Import['logger']
 
     Account = Struct.new(:user_id, :username, :email)
 
@@ -11,6 +12,7 @@ module PutIo
     end
 
     def create_folder(name, parent_id = 0, access_token:)
+      logger.debug("create_folder: #{name}, #{parent_id}")
       rs = conn.post('/v2/files/create-folder',
                      oauth_token: access_token, name: name, parent_id: parent_id)
       raise unless rs.success?
@@ -27,6 +29,7 @@ module PutIo
     end
 
     def list_files(parent_id = 0, access_token:)
+      logger.debug("list_files: #{parent_id}")
       rs = conn.get('/v2/files/list',
                     oauth_token: access_token, parent_id: parent_id)
       raise unless rs.success?
@@ -35,6 +38,7 @@ module PutIo
     end
 
     def move_file(file_id, folder_id, access_token:)
+      logger.debug("move_file: #{file_id}, #{folder_id}")
       rs = conn.post('/v2/files/move',
                      oauth_token: access_token, file_ids: file_id, parent_id: folder_id)
       raise "HTTP status #{rs.status}" unless rs.success?
