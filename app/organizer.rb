@@ -5,7 +5,7 @@ class Organizer
   include Import['logger']
 
   def organize(account)
-    logger.info("Organize: #{account[:username]}")
+    logger.info("Organize: #{account}")
     folder = maybe_create_folder('-=- TV Series -=-', access_token: account[:access_token])
     transfers = putio.list_completed_transfers(access_token: account[:access_token])
     transfers.each do |e|
