@@ -21,4 +21,8 @@ class Dependencies
   register(:shows_repository) do
     ShowsRepository.new
   end
+
+  register(:accounts_repository) do
+    AccountsRepository.new
+  end
 end
