@@ -4,6 +4,7 @@ $stdout.sync = true
 
 require 'resque'
 require 'sequel'
+require 'active_support/core_ext/hash'
 
 require_relative 'config/dependencies'
 Import = Dry::AutoInject(Dependencies)

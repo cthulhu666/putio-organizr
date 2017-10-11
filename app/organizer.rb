@@ -1,7 +1,6 @@
 class Organizer
   include Import['putio']
   include Import['shows_repository']
-  include Import['accounts_repository']
   include Import['logger']
 
   def organize(account)

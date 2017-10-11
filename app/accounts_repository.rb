@@ -9,4 +9,8 @@ class AccountsRepository
   def list_accounts
     db[:accounts].all
   end
+
+  def find_by_user_id(user_id)
+    db[:accounts].first(user_id: user_id.to_s)
+  end
 end

@@ -9,8 +9,8 @@ end
 
 task organize: :env do
   Dependencies['accounts_repository'].list_accounts.each do |a|
-    Dependencies['logger'].info("Enqueue: #{a}")
-    Resque.enqueue(OrganizerJob, a)
+    Dependencies['logger'].info("Enqueue: #{a.slice(:user_id, :username)}")
+    Resque.enqueue(OrganizerJob, a[:user_id])
   end
 end
 
