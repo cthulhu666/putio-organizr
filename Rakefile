@@ -7,7 +7,7 @@ task import: :env do
 end
 
 task organize: :env do
-  Organizer.new.organize
+  Dependencies['organizer'].organize_all
 end
 
 task :env do

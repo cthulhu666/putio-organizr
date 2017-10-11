@@ -6,6 +6,7 @@ require 'json'
 
 class WebApp < Grape::API
   logger Logger.new(STDOUT)
+  format :json
 
   params do
     requires :code
@@ -14,6 +15,7 @@ class WebApp < Grape::API
     token = Dependencies['putio'].fetch_access_token(params['code'])
     account = Dependencies['putio'].fetch_account_info(access_token: token)
     Dependencies['accounts_repository'].save_account(account, token)
+    Dependencies['organizer'].organize(account.to_h.merge(access_token: token))
     'OK'
   end
 end

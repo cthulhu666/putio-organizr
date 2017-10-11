@@ -4,6 +4,10 @@ require 'dry/auto_inject'
 class Dependencies
   extend Dry::Container::Mixin
 
+  register(:logger, memoize: true) do
+    Logger.new(STDOUT)
+  end
+
   register(:db, memoize: true) do
     db_url = ENV.fetch('DATABASE_URL')
 
@@ -24,5 +28,9 @@ class Dependencies
 
   register(:accounts_repository) do
     AccountsRepository.new
+  end
+
+  register(:organizer) do
+    Organizer.new
   end
 end
