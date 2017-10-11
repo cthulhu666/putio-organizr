@@ -4,10 +4,6 @@ class Organizer
   include Import['accounts_repository']
   include Import['logger']
 
-  def organize_all
-    accounts_repository.list_accounts.each(&method(:organize))
-  end
-
   def organize(account)
     logger.info("Organize: #{account[:username]}")
     folder = maybe_create_folder('-=- TV Series -=-', access_token: account[:access_token])

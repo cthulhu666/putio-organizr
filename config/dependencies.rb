@@ -18,6 +18,10 @@ class Dependencies
     end
   end
 
+  register(:redis, memoize: true) do
+    Redis::Namespace.new('putio-organizr', redis: Redis.new(url: ENV.fetch('REDIS_URL')))
+  end
+
   register(:putio) do
     PutIo::Client.new
   end

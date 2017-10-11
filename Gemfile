@@ -10,6 +10,7 @@ gem 'dry-auto_inject'
 gem 'dry-container'
 gem 'faraday'
 gem 'rake'
+gem 'resque'
 
 # WEB stack
 gem 'grape'
