@@ -8,17 +8,15 @@ class Dependencies
     Logger.new(STDOUT)
   end
 
-  register(:db, memoize: true) do
+  register(:db) do
     db_url = ENV.fetch('DATABASE_URL')
 
     Sequel.connect(db_url).tap do |db|
-      # db.extension :pg_array, :pg_json, :pagination
-
       db.loggers << Dependencies[:logger] if ENV['DEBUG_SQL']
     end
   end
 
-  register(:redis, memoize: true) do
+  register(:redis) do
     Redis::Namespace.new('putio-organizr', redis: Redis.new(url: ENV.fetch('REDIS_URL')))
   end
 
