@@ -10,6 +10,6 @@ class OrganizerJob
   end
 
   def organize(account)
-    organizer.organize(account)
+    organizer.organize(account.with_indifferent_access)
   end
 end
