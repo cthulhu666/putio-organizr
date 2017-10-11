@@ -10,8 +10,10 @@ gem 'dry-auto_inject'
 gem 'dry-container'
 gem 'faraday'
 gem 'rake'
+
 gem 'resque'
 gem 'resque-heroku-signals'
+gem 'resque-web', require: 'resque_web'
 
 # WEB stack
 gem 'grape'
