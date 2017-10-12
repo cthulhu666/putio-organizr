@@ -1,6 +1,6 @@
 require_relative '../environment'
 
-ENV['DATABASE_URL'] = 'postgres://localhost:5432/putio-test'
+ENV['DATABASE_URL'] ||= 'postgres://localhost:5432/putio-test'
 
 require 'dry/container/stub'
 Dependencies.enable_stubs!
