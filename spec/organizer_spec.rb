@@ -4,7 +4,6 @@ RSpec.describe Organizer do
   let(:organizer) { Organizer.new }
   let(:account) { { access_token: 'S3CR3T!' } }
   describe '#organize' do
-
     before do
       Dependencies.stub('putio', putio)
     end

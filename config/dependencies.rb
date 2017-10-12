@@ -4,6 +4,13 @@ require 'dry/auto_inject'
 class Dependencies
   extend Dry::Container::Mixin
 
+  # https://www.postgresql.org/docs/9.5/static/textsearch-controls.html#TEXTSEARCH-RANKING
+  # 1 divides the rank by 1 + the logarithm of the document length
+  # 4 divides the rank by the mean harmonic distance between extents (this is implemented only by ts_rank_cd)
+  register(:config,
+           rank_normalization: 4 | 1,
+           rank_threshold: 0.4)
+
   register(:logger, memoize: true) do
     Logger.new(STDOUT)
   end
