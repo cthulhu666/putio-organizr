@@ -16,6 +16,7 @@ class Organizer
       else
         logger.debug("Match found for: #{e[:transfer_name]} : #{s}")
       end
+      next if ENV['DRY_RUN']
       f = maybe_create_folder(s[:title], folder[:id], access_token: account[:access_token])
       putio.move_file(e[:file_id], f[:id], access_token: account[:access_token])
     end
