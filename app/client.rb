@@ -41,7 +41,10 @@ module PutIo
       logger.debug("move_file: #{file_id}, #{folder_id}")
       rs = conn.post('/v2/files/move',
                      oauth_token: access_token, file_ids: file_id, parent_id: folder_id)
-      raise "HTTP status #{rs.status}" unless rs.success?
+      if !rs.success?
+        return false if rs.status == 404
+        raise "HTTP status #{rs.status}"
+      end
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:status]
     end
