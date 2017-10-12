@@ -7,7 +7,9 @@ class TvShows
     1.upto(1000) do |n| # TODO: get upper value from rss?
       url = "http://showrss.info/show/#{n}.rss"
       rss = fetch(url)
-      upsert(parse_title(rss.channel.title), url) if rss
+      next if rss.nil?
+      upsert(parse_title(rss.channel.title), url)
+      upsert_items(url, rss.items)
     end
   end
 
@@ -25,5 +27,12 @@ class TvShows
 
   def upsert(title, feed)
     db[:shows].insert_conflict.insert(title: title, feed: feed)
+  end
+
+  def upsert_items(url, items)
+    items.each do |i|
+      db[:shows].where(feed: url)
+          .update(episode_titles: Sequel.lit("array_uniq(array_append(episode_titles, ?))", i.title))
+    end
   end
 end
