@@ -8,8 +8,14 @@ class Organizer
     folder = maybe_create_folder('-=- TV Series -=-', access_token: account[:access_token])
     transfers = putio.list_completed_transfers(access_token: account[:access_token])
     transfers.each do |e|
+      logger.debug("Transfer name: #{e[:transfer_name]}")
       s = shows_repository.find_by_title(e[:transfer_name])
-      next if s.nil?
+      if s.nil?
+        logger.debug("No match for: #{e[:transfer_name]}")
+        next
+      else
+        logger.debug("Match found for: #{e[:transfer_name]} : #{s}")
+      end
       f = maybe_create_folder(s[:title], folder[:id], access_token: account[:access_token])
       putio.move_file(e[:file_id], f[:id], access_token: account[:access_token])
     end
