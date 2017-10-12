@@ -7,9 +7,10 @@ class Dependencies
   # https://www.postgresql.org/docs/9.5/static/textsearch-controls.html#TEXTSEARCH-RANKING
   # 1 divides the rank by 1 + the logarithm of the document length
   # 4 divides the rank by the mean harmonic distance between extents (this is implemented only by ts_rank_cd)
+  # 16 divides the rank by 1 + the logarithm of the number of unique words in document
   register(:config,
-           rank_normalization: 4 | 1,
-           rank_threshold: 0.4)
+           rank_normalization: 16 | 4 | 1,
+           rank_threshold: 0.25)
 
   register(:logger, memoize: true) do
     Logger.new(STDOUT)
