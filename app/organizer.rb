@@ -8,21 +8,27 @@ class Organizer
     logger.info("Organize: #{account}")
     folder = maybe_create_folder('-=- TV Series -=-', access_token: account[:access_token])
     transfers = putio.list_completed_transfers(access_token: account[:access_token])
-    transfers.reject(&method(:already_processed?)).each do |e|
-      logger.debug("Transfer name: #{e[:transfer_name]}")
-      s = shows_repository.find_by_title(e[:transfer_name])
-      if s.nil?
-        logger.debug("No match for: #{e[:transfer_name]}")
-        next
-      else
-        logger.debug("Match found for: #{e[:transfer_name]} : #{s}")
+
+    transfers.reject(&method(:already_processed?))
+             .map(&method(:find_match))
+             .each do |t, m|
+      if m && !ENV['DRY_RUN']
+        f = maybe_create_folder(m[:title], folder[:id], access_token: account[:access_token])
+        putio.move_file(t[:file_id], f[:id], access_token: account[:access_token])
+        logger.debug("File moved: #{t[:transfer_name]}")
       end
-      next if ENV['DRY_RUN']
-      f = maybe_create_folder(s[:title], folder[:id], access_token: account[:access_token])
-      putio.move_file(e[:file_id], f[:id], access_token: account[:access_token])
-      logger.debug("File moved: #{e[:transfer_name]}")
-      mark_as_processed!(e)
+      mark_as_processed!(t)
     end
+  end
+
+  def find_match(transfer)
+    s = shows_repository.find_by_title(transfer[:transfer_name])
+    if s
+      logger.debug("Match found for: #{transfer[:transfer_name]} : #{s}")
+    else
+      logger.debug("No match for: #{transfer[:transfer_name]}")
+    end
+    [transfer, s]
   end
 
   def already_processed?(transfer)
