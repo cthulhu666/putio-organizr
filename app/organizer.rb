@@ -2,12 +2,13 @@ class Organizer
   include Import['putio']
   include Import['shows_repository']
   include Import['logger']
+  include Import['redis']
 
   def organize(account)
     logger.info("Organize: #{account}")
     folder = maybe_create_folder('-=- TV Series -=-', access_token: account[:access_token])
     transfers = putio.list_completed_transfers(access_token: account[:access_token])
-    transfers.each do |e|
+    transfers.reject(&method(:already_processed?)).each do |e|
       logger.debug("Transfer name: #{e[:transfer_name]}")
       s = shows_repository.find_by_title(e[:transfer_name])
       if s.nil?
@@ -19,7 +20,19 @@ class Organizer
       next if ENV['DRY_RUN']
       f = maybe_create_folder(s[:title], folder[:id], access_token: account[:access_token])
       putio.move_file(e[:file_id], f[:id], access_token: account[:access_token])
+      logger.debug("File moved: #{e[:transfer_name]}")
+      mark_as_processed!(e)
     end
+  end
+
+  def already_processed?(transfer)
+    key = "processed-transfers-#{transfer[:user_id]}"
+    redis.sismember(key, transfer[:file_id])
+  end
+
+  def mark_as_processed!(transfer)
+    key = "processed-transfers-#{transfer[:user_id]}"
+    redis.sadd(key, transfer[:file_id])
   end
 
   def maybe_create_folder(name, parent_id = 0, access_token:)
