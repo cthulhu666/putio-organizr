@@ -7,6 +7,8 @@ module PutIo
 
     Account = Struct.new(:user_id, :username, :email)
 
+    ClientError = Class.new(RuntimeError)
+
     def list_completed_transfers(access_token:)
       completed_transfers(list_events(access_token: access_token))
     end
@@ -23,7 +25,7 @@ module PutIo
     def list_events(access_token:)
       rs = conn.get('/v2/events/list',
                     oauth_token: access_token)
-      raise unless rs.success?
+      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:events]
     end
@@ -32,7 +34,7 @@ module PutIo
       logger.debug("list_files: #{parent_id}")
       rs = conn.get('/v2/files/list',
                     oauth_token: access_token, parent_id: parent_id)
-      raise unless rs.success?
+      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:files]
     end
@@ -43,7 +45,7 @@ module PutIo
                      oauth_token: access_token, file_ids: file_id, parent_id: folder_id)
       if !rs.success?
         return false if rs.status == 404
-        raise "HTTP status #{rs.status}"
+        fail ClientError, "HTTP status #{rs.status}"
       end
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:status]
@@ -51,7 +53,7 @@ module PutIo
 
     def fetch_account_info(access_token:)
       rs = conn.get('/v2/account/info', oauth_token: access_token)
-      raise "HTTP status #{rs.status}" unless rs.success?
+      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
       json = JSON.parse(rs.body, symbolize_names: true)
       Account.new(json.dig(:info, :user_id), json.dig(:info, :username), json.dig(:info, :mail))
     end
@@ -63,7 +65,7 @@ module PutIo
                        grant_type: 'authorization_code',
                        redirect_uri: 'https://putio-organizr.herokuapp.com/oauth',
                        code: code
-      raise "HTTP status #{rs.status}" unless rs.success?
+      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:access_token]
     end

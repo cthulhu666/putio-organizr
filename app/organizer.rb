@@ -19,6 +19,9 @@ class Organizer
       end
       mark_as_processed!(t)
     end
+
+  rescue PutIo::Client::ClientError => e
+    puts e
   end
 
   def find_match(transfer)
