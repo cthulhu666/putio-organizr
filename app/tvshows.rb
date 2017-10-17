@@ -32,7 +32,8 @@ class TvShows
   def upsert_items(url, items)
     items.each do |i|
       db[:shows].where(feed: url)
-          .update(episode_titles: Sequel.lit("array_uniq(array_append(episode_titles, ?))", i.title))
+                .update(episode_titles: Sequel.lit('array_uniq(array_append(episode_titles, ?))', i.title),
+                        updated_at: Sequel.function('now'))
     end
   end
 end
