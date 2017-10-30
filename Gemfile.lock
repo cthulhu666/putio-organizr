@@ -24,6 +24,7 @@ GEM
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
     builder (3.2.3)
+    coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     coffee-rails (4.2.2)
@@ -90,6 +91,9 @@ GEM
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     pg (0.21.0)
+    pry (0.11.2)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
     rack (2.0.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -195,6 +199,7 @@ DEPENDENCIES
   grape
   newrelic_rpm
   pg
+  pry
   rake
   resque
   resque-heroku-signals
@@ -206,4 +211,4 @@ RUBY VERSION
    ruby 2.4.1p111
 
 BUNDLED WITH
-   1.15.3
+   1.15.4
