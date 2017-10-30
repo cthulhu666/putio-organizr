@@ -26,6 +26,3 @@ gem 'sequel'
 group :test do
   gem 'rspec'
 end
-
-# NOTE: usually it's in development group, but I want this on Heroku
-gem 'pry'

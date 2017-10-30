@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 require_relative '../environment'
-require 'pry'
+require 'irb'
 
-Pry::CLI.parse_options
+IRB.start
