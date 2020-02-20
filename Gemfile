@@ -14,7 +14,6 @@ gem 'rake'
 
 gem 'resque'
 gem 'resque-heroku-signals'
-gem 'resque-web', require: 'resque_web'
 
 # WEB stack
 gem 'grape'
