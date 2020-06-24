@@ -55,7 +55,7 @@ GEM
       mustermann (>= 1.0.0)
     newrelic_rpm (6.8.0.360)
     pg (1.2.2)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-protection (2.0.8.1)
