@@ -4,7 +4,7 @@ class TvShows
   include Import['db']
 
   def import
-    1.upto(1000) do |n| # TODO: get upper value from rss?
+    1.upto(2000) do |n| # TODO: get upper value from rss?
       url = "http://showrss.info/show/#{n}.rss"
       rss = fetch(url)
       next if rss.nil?
@@ -17,7 +17,7 @@ class TvShows
     RSS::Parser.parse(url, true)
   rescue OpenURI::HTTPError => e
     return nil if e.io.status.first == '404'
-    sleep 1 && retry if e.io.status.first == '503'
+    sleep rand(5..10) && retry if e.io.status.first == '503'
     raise e
   end
 

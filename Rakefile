@@ -9,9 +9,7 @@ end
 
 task organize: :env do
   organizer = Dependencies['organizer']
-  Dependencies['accounts_repository'].list_accounts.each do |a|
-    organizer.organize(a)
-  end
+  organizer.organize_all
 end
 
 task 'resque:setup' => :env do

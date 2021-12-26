@@ -9,10 +9,14 @@ class AccountsRepository
   end
 
   def list_accounts
-    db[:accounts].all
+    db[:accounts].where(disabled: false).all
   end
 
   def find_by_user_id(user_id)
     db[:accounts].first(user_id: user_id.to_s)
+  end
+
+  def disable_account(user_id)
+    db[:accounts].where(user_id: user_id).update(disabled: true)
   end
 end
