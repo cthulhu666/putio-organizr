@@ -2,15 +2,17 @@
 
 source 'https://rubygems.org'
 
-ruby '2.6.3'
+ruby '3.0.3'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
+gem 'activesupport', '~> 6.1'
 gem 'dry-auto_inject'
 gem 'dry-container'
 gem 'faraday'
 gem 'newrelic_rpm'
 gem 'rake'
+gem 'rss'
 
 gem 'resque'
 gem 'resque-heroku-signals'
