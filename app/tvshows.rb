@@ -17,7 +17,7 @@ class TvShows
     RSS::Parser.parse(url, true)
   rescue OpenURI::HTTPError => e
     return nil if e.io.status.first == '404'
-    sleep 1 && retry if e.io.status.first == '503'
+    sleep rand(5..10) && retry if e.io.status.first == '503'
     raise e
   end
 
