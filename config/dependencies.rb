@@ -5,16 +5,11 @@ class Dependencies
   extend Dry::Container::Mixin
 
   # https://www.postgresql.org/docs/9.5/static/textsearch-controls.html#TEXTSEARCH-RANKING
-  # 0 (the default) ignores the document length
   # 1 divides the rank by 1 + the logarithm of the document length
-  # 2 divides the rank by the document length
   # 4 divides the rank by the mean harmonic distance between extents (this is implemented only by ts_rank_cd)
-  # 8 divides the rank by the number of unique words in document
   # 16 divides the rank by 1 + the logarithm of the number of unique words in document
-  # 32 divides the rank by itself + 1
-
   register(:config,
-           rank_normalization: 32,
+           rank_normalization: 16 | 4 | 1,
            rank_threshold: 0.25)
 
   register(:logger, memoize: true) do
