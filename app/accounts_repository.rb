@@ -3,7 +3,9 @@ class AccountsRepository
 
   def save_account(account, access_token)
     attributes = account.to_h
-    db[:accounts].insert_conflict.insert(attributes.merge(access_token: access_token))
+    db[:accounts].insert_conflict(constraint: 'accounts_user_id_key',
+                                  update: { :access_token => Sequel[:excluded][:access_token] })
+                 .insert(attributes.merge(access_token: access_token))
   end
 
   def list_accounts
