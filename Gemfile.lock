@@ -67,7 +67,10 @@ GEM
     mustermann-grape (1.0.1)
       mustermann (>= 1.0.0)
     newrelic_rpm (8.2.0)
+    nio4r (2.5.8)
     pg (1.2.3)
+    puma (5.5.2)
+      nio4r (~> 2.0)
     rack (2.2.3)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -126,6 +129,7 @@ DEPENDENCIES
   grape
   newrelic_rpm
   pg
+  puma
   rake
   resque
   resque-heroku-signals
