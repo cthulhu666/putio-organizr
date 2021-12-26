@@ -8,6 +8,7 @@ module PutIo
     Account = Struct.new(:user_id, :username, :email)
 
     ClientError = Class.new(RuntimeError)
+    UnauthorizedError = Class.new(ClientError)
 
     def list_completed_transfers(access_token:)
       completed_transfers(list_events(access_token: access_token))
@@ -17,7 +18,7 @@ module PutIo
       logger.debug("create_folder: #{name}, #{parent_id}")
       rs = conn.post('/v2/files/create-folder',
                      oauth_token: access_token, name: name, parent_id: parent_id)
-      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
+      handle_errors!(rs)
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:file]
     end
@@ -25,7 +26,7 @@ module PutIo
     def list_events(access_token:)
       rs = conn.get('/v2/events/list',
                     oauth_token: access_token)
-      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
+      handle_errors!(rs)
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:events]
     end
@@ -34,7 +35,7 @@ module PutIo
       logger.debug("list_files: #{parent_id}")
       rs = conn.get('/v2/files/list',
                     oauth_token: access_token, parent_id: parent_id)
-      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
+      handle_errors!(rs)
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:files]
     end
@@ -53,19 +54,19 @@ module PutIo
 
     def fetch_account_info(access_token:)
       rs = conn.get('/v2/account/info', oauth_token: access_token)
-      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
+      handle_errors!(rs)
       json = JSON.parse(rs.body, symbolize_names: true)
       Account.new(json.dig(:info, :user_id), json.dig(:info, :username), json.dig(:info, :mail))
     end
 
     def fetch_access_token(code)
       rs = conn.get '/v2/oauth2/access_token',
-                       client_id: ENV.fetch('CLIENT_ID'),
-                       client_secret: ENV.fetch('CLIENT_SECRET'),
-                       grant_type: 'authorization_code',
-                       redirect_uri: 'https://putio-organizr.herokuapp.com/oauth',
-                       code: code
-      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
+                    client_id: ENV.fetch('CLIENT_ID'),
+                    client_secret: ENV.fetch('CLIENT_SECRET'),
+                    grant_type: 'authorization_code',
+                    redirect_uri: 'https://putio-organizr.herokuapp.com/oauth',
+                    code: code
+      handle_errors!(rs)
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:access_token]
     end
@@ -80,6 +81,16 @@ module PutIo
 
     def conn
       @conn ||= Faraday.new('https://api.put.io')
+    end
+
+    def handle_errors!(response)
+      return if response.success?
+      case response.status
+      in 401..402
+        fail UnauthorizedError, "HTTP status #{response.status}"
+      else
+        fail ClientError, "HTTP status #{response.status}"
+      end
     end
   end
 end

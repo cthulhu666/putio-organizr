@@ -1,8 +1,16 @@
 class Organizer
   include Import['putio']
   include Import['shows_repository']
+  include Import['accounts_repository']
   include Import['logger']
   include Import['redis']
+
+  def organize_all
+    accounts = Dependencies['accounts_repository'].list_accounts
+    accounts.each do |account|
+      organize(account)
+    end
+  end
 
   def organize(account)
     logger.info("Organize: #{account}")
@@ -20,6 +28,9 @@ class Organizer
       mark_as_processed!(t)
     end
 
+  rescue PutIo::Client::UnauthorizedError => e
+    logger.info("Disabling account: #{account}")
+    accounts_repository.disable_account(account[:user_id])
   rescue PutIo::Client::ClientError => e
     puts e
   end
