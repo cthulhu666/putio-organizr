@@ -17,7 +17,7 @@ module PutIo
       logger.debug("create_folder: #{name}, #{parent_id}")
       rs = conn.post('/v2/files/create-folder',
                      oauth_token: access_token, name: name, parent_id: parent_id)
-      raise unless rs.success?
+      fail ClientError, "HTTP status #{rs.status}" unless rs.success?
       json = JSON.parse(rs.body, symbolize_names: true)
       json[:file]
     end
