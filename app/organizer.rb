@@ -16,9 +16,11 @@ class Organizer
     logger.info("Organize: #{account}")
     folder = maybe_create_folder('-=- TV Series -=-', access_token: account[:access_token])
     transfers = putio.list_completed_transfers(access_token: account[:access_token])
+                     .reject(&method(:already_processed?))
 
-    transfers.reject(&method(:already_processed?))
-             .map(&method(:find_match))
+    return if transfers.empty?
+
+    transfers.map(&method(:find_match).curry.call(stopwords))
              .each do |t, m|
       if m && !ENV['DRY_RUN']
         f = maybe_create_folder(m[:title], folder[:id], access_token: account[:access_token])
@@ -35,8 +37,12 @@ class Organizer
     puts e
   end
 
-  def find_match(transfer)
-    s = shows_repository.find_by_title(transfer[:transfer_name])
+  def stopwords
+    shows_repository.stopwords.map { |e| e[:w] }
+  end
+
+  def find_match(stopwords, transfer)
+    s = shows_repository.find_by_title(transfer[:transfer_name], stopwords)
     if s
       logger.debug("Match found for: #{transfer[:transfer_name]} : #{s}")
     else
